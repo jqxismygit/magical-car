@@ -77897,3 +77897,5 @@ interface XRAnchorCreator {
     referenceSpace: XRReferenceSpace,
   ): Promise<XRAnchor>;
 }
+
+

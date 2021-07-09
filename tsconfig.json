@@ -20,7 +20,8 @@
     "src/**/*",
     "config/**/*",
     ".umirc.ts",
-    "typings.d.ts"
+    "babylon.d.ts",
+    "babylon.gui.d.ts"
   ],
   "exclude": [
     "node_modules",

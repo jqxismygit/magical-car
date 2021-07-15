@@ -47,15 +47,27 @@ export default function IndexPage() {
         scene.render();
       });
 
+      //监听浏览器窗口调整画布大小
+      window.addEventListener('resize', function () {
+        engine.resize();
+      });
+
       async function loadModels() {
         BABYLON.SceneLoader.ShowLoadingScreen = false;
         await Promise.all([
           BABYLON.SceneLoader.AppendAsync('models/', 'Car.babylon', scene),
           BABYLON.SceneLoader.AppendAsync(
             'models/',
-            'Car_Hotspot.babylon',
+            'Car_Hotspot.glb',
             scene,
-          ),
+          ).then((results) => {
+            //获取原始根节点id
+            const root = scene.getNodeByName('__root__');
+            // root.rotationQuaternion = null
+            // 修改id和name
+            root.id = 'Hotspot_root';
+            root.name = 'Hotspot_root';
+          }),
         ]);
       }
 

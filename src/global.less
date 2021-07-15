@@ -11,3 +11,9 @@ body {
   width: 100%;
   height: 100%;
 }
+
+// DebugLayer 右侧面板中输入框与选择框内的文字不知道被哪里的css污染了，看不清，所以用此覆盖
+#inspector-host input,
+select {
+  color: black;
+}

@@ -1,10 +1,13 @@
 import React from 'react';
 
+export interface BabylonData {
+  engine: BABYLON.Engine;
+  scene: BABYLON.Scene;
+  uiCanvas: BABYLON.GUI.AdvancedDynamicTexture;
+}
 interface BabylonContextValue {
-  scene?: BABYLON.Scene;
-  setScene: (scene: BABYLON.Scene) => void;
-  uiCanvas?: BABYLON.GUI.AdvancedDynamicTexture;
-  setUiCanvas: (scene: BABYLON.Scene) => void;
+  babylon: BabylonData;
+  setBabylon?: (babylon: BabylonData) => void;
 }
 
 export const BabylonContext = React.createContext<BabylonContextValue>(

@@ -6,7 +6,8 @@ interface HotspotsProps {
 }
 
 const Hotspots: React.FC<HotspotsProps> = (props) => {
-  const { scene, uiCanvas } = useBabyloneContext();
+  const { babylon } = useBabyloneContext();
+  const { scene, uiCanvas } = babylon;
   React.useEffect(() => {
     let button1: BABYLON.GUI.Button;
     if (scene) {

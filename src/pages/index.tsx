@@ -1,16 +1,15 @@
 import React from 'react';
 // import Barrage from 'barrage-ui';
 // import example from 'barrage-ui/example.json'; // 组件提供的示例数据
-import { BabylonContext } from '../components/babylon-context';
+import { BabylonContext, BabylonData } from '../components/babylon-context';
 import Hotspots from '../components/hotspots';
+import SceneExplorer from '../components/scene-explorer';
 import styles from './index.less';
 
 export default function IndexPage() {
   const canvasRef = React.useRef<any>(null);
   const barrageRef = React.useRef<any>(null);
-  const [scene, setScene] = React.useState<BABYLON.Scene>();
-  const [uiCanvas, setUiCanvas] =
-    React.useState<BABYLON.GUI.AdvancedDynamicTexture>();
+  const [babylon, setBabylon] = React.useState<BabylonData>();
   React.useEffect(() => {
     // const canvas = document.getElementById('renderCanvas'); // Get the canvas element
     const engine = new BABYLON.Engine(canvasRef.current, true); // Generate the BABYLON 3D engine
@@ -42,12 +41,27 @@ export default function IndexPage() {
       const scene = createScene(); //Call the createScene function
       const uiCanvas =
         BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI('uiCanvas');
+
       // Register a render loop to repeatedly render the scene
       engine.runRenderLoop(function () {
         scene.render();
       });
-      setScene(scene);
-      setUiCanvas(uiCanvas);
+
+      async function loadModels() {
+        BABYLON.SceneLoader.ShowLoadingScreen = false;
+        await Promise.all([
+          BABYLON.SceneLoader.AppendAsync('models/', 'Car.babylon', scene),
+          BABYLON.SceneLoader.AppendAsync(
+            'models/',
+            'Car_Hotspot.babylon',
+            scene,
+          ),
+        ]);
+      }
+
+      loadModels();
+
+      setBabylon({ scene, uiCanvas, engine });
     }
   }, []);
 
@@ -75,8 +89,29 @@ export default function IndexPage() {
   //   barrage.play();
   // }, []);
 
+  // React.useEffect(() => {
+  //   function togglerDebugLayer() {
+  //     var scene = engine.scenes[0];
+  //     if (scene.debugLayer.isVisible()) {
+  //       scene.debugLayer.hide();
+  //     } else {
+  //       scene.debugLayer.show({
+  //         overlay: true, //覆盖模式打开
+  //       });
+  //     }
+  //   }
+
+  //   document.addEventListener('keydown', function (event) {
+  //     if (event.altKey && event.shiftKey && event.keyCode === 68) {
+  //       togglerDebugLayer();
+  //     }
+  //   });
+  // }, []);
+
   return (
-    <BabylonContext.Provider value={{ scene, setScene, uiCanvas, setUiCanvas }}>
+    <BabylonContext.Provider
+      value={{ babylon: babylon as BabylonData, setBabylon }}
+    >
       <canvas
         id="renderCanvas"
         touch-action="none"
@@ -95,8 +130,9 @@ export default function IndexPage() {
         }}
       ></div> */}
       {/* 所有的插件都条件渲染 */}
-      {scene && uiCanvas && (
+      {babylon && (
         <>
+          <SceneExplorer />
           <Hotspots />
         </>
       )}

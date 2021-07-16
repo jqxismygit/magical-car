@@ -77,6 +77,11 @@ export default function IndexPage() {
 
         // console.log('mesh = ', mesh);
 
+        // 监测浏览器/画布调整大小事件
+        window.addEventListener('resize', function () {
+          engine.resize();
+        });
+
         setBabylon({ scene, uiCanvas, engine });
       }
 

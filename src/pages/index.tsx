@@ -4,6 +4,8 @@ import React from 'react';
 import { BabylonContext, BabylonData } from '../components/babylon-context';
 import Hotspots from '../components/hotspots';
 import SceneExplorer from '../components/scene-explorer';
+import { findByPath } from '@/utils';
+import hotspots from './hotspot-config';
 import styles from './index.less';
 
 export default function IndexPage() {
@@ -18,7 +20,7 @@ export default function IndexPage() {
     const createScene = function () {
       const scene = new BABYLON.Scene(engine);
 
-      BABYLON.MeshBuilder.CreateBox('box', {});
+      // BABYLON.MeshBuilder.CreateBox('box', {});
 
       const camera = new BABYLON.ArcRotateCamera(
         'camera',
@@ -41,39 +43,44 @@ export default function IndexPage() {
       const scene = createScene(); //Call the createScene function
       const uiCanvas =
         BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI('uiCanvas');
-
+      const CoT = new BABYLON.TransformNode('root');
       // Register a render loop to repeatedly render the scene
       engine.runRenderLoop(function () {
         scene.render();
       });
 
-      //监听浏览器窗口调整画布大小
-      window.addEventListener('resize', function () {
-        engine.resize();
-      });
-
-      async function loadModels() {
+      async function initScene() {
         BABYLON.SceneLoader.ShowLoadingScreen = false;
         await Promise.all([
           BABYLON.SceneLoader.AppendAsync('models/', 'Car.babylon', scene),
           BABYLON.SceneLoader.AppendAsync(
             'models/',
-            'Car_Hotspot.glb',
+            'Car_Hotspot.babylon',
             scene,
-          ).then((results) => {
-            //获取原始根节点id
-            const root = scene.getNodeByName('__root__');
-            // root.rotationQuaternion = null
-            // 修改id和name
-            root.id = 'Hotspot_root';
-            root.name = 'Hotspot_root';
-          }),
+          ),
         ]);
+        // scene.rootNodes.forEach((node) => {
+        //   console.log('node = ', node.name);
+        //   // if(node.name === 'Animation_Hotspot' || node.name === 'Describe_Hotspot'){
+        //   //   node.parent = CoT;
+        //   // }
+        //   // node.parent = CoT;
+        // });
+        // const node = scene.getNodeByName('OpenCarDoor_L');
+        // node?.getChildMeshes;
+        // const id = scene.getMeshByName('OpenCarDoor_L')?.position;
+        // // const aa = id && scene.getTransformNodeByID(id);
+        // console.log('id = ', id);
+        // console.log('aa = ', aa);
+
+        // const mesh = findByPath(scene, 'Animation_Hotspot/OpenCarDoor_L');
+
+        // console.log('mesh = ', mesh);
+
+        setBabylon({ scene, uiCanvas, engine });
       }
 
-      loadModels();
-
-      setBabylon({ scene, uiCanvas, engine });
+      initScene();
     }
   }, []);
 
@@ -145,7 +152,19 @@ export default function IndexPage() {
       {babylon && (
         <>
           <SceneExplorer />
-          <Hotspots />
+          <Hotspots
+            activeTags={['desc', 'animation']}
+            data={hotspots}
+            onClick={(k) => {
+              if (k === 'OpenCarDoor_L' || k === 'OpenCarDoor_R') {
+                const openDoor =
+                  babylon.scene.getAnimationGroupByName('AN_Door_R');
+
+                openDoor?.start(false, 2, openDoor.from, openDoor.to);
+                console.log('openDoor = ', openDoor);
+              }
+            }}
+          />
         </>
       )}
     </BabylonContext.Provider>

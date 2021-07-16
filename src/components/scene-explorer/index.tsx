@@ -19,6 +19,7 @@ const SceneExplorer = () => {
         togglerDebugLayer();
       }
     });
+    // togglerDebugLayer();
   }, [scene]);
   return <></>;
 };

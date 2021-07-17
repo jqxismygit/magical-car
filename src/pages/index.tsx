@@ -4,7 +4,7 @@ import React from 'react';
 import { BabylonContext, BabylonData } from '../components/babylon-context';
 import Hotspots from '../components/hotspots';
 import SceneExplorer from '../components/scene-explorer';
-import { findByPath } from '@/utils';
+import { startAnimation } from '@/utils';
 import hotspots from './hotspot-config';
 import styles from './index.less';
 
@@ -59,23 +59,6 @@ export default function IndexPage() {
             scene,
           ),
         ]);
-        // scene.rootNodes.forEach((node) => {
-        //   console.log('node = ', node.name);
-        //   // if(node.name === 'Animation_Hotspot' || node.name === 'Describe_Hotspot'){
-        //   //   node.parent = CoT;
-        //   // }
-        //   // node.parent = CoT;
-        // });
-        // const node = scene.getNodeByName('OpenCarDoor_L');
-        // node?.getChildMeshes;
-        // const id = scene.getMeshByName('OpenCarDoor_L')?.position;
-        // // const aa = id && scene.getTransformNodeByID(id);
-        // console.log('id = ', id);
-        // console.log('aa = ', aa);
-
-        // const mesh = findByPath(scene, 'Animation_Hotspot/OpenCarDoor_L');
-
-        // console.log('mesh = ', mesh);
 
         // 监测浏览器/画布调整大小事件
         window.addEventListener('resize', function () {
@@ -113,24 +96,14 @@ export default function IndexPage() {
   //   barrage.play();
   // }, []);
 
-  // React.useEffect(() => {
-  //   function togglerDebugLayer() {
-  //     var scene = engine.scenes[0];
-  //     if (scene.debugLayer.isVisible()) {
-  //       scene.debugLayer.hide();
-  //     } else {
-  //       scene.debugLayer.show({
-  //         overlay: true, //覆盖模式打开
-  //       });
-  //     }
-  //   }
-
-  //   document.addEventListener('keydown', function (event) {
-  //     if (event.altKey && event.shiftKey && event.keyCode === 68) {
-  //       togglerDebugLayer();
-  //     }
-  //   });
-  // }, []);
+  const handleHotspotClick = (k: string) => {
+    console.log(k);
+    if (k === 'OpenCarDoor_L') {
+      babylon?.scene && startAnimation(babylon?.scene, 'AN_Door_L');
+    } else if (k === 'OpenCarDoor_R') {
+      babylon?.scene && startAnimation(babylon?.scene, 'AN_Door_R');
+    }
+  };
 
   return (
     <BabylonContext.Provider
@@ -158,17 +131,9 @@ export default function IndexPage() {
         <>
           <SceneExplorer />
           <Hotspots
-            activeTags={['desc', 'animation']}
+            activeTags={['animation']}
             data={hotspots}
-            onClick={(k) => {
-              if (k === 'OpenCarDoor_L' || k === 'OpenCarDoor_R') {
-                const openDoor =
-                  babylon.scene.getAnimationGroupByName('AN_Door_R');
-
-                openDoor?.start(false, 2, openDoor.from, openDoor.to);
-                console.log('openDoor = ', openDoor);
-              }
-            }}
+            onClick={handleHotspotClick}
           />
         </>
       )}

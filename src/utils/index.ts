@@ -26,13 +26,6 @@ function findChildMeshes(
     const nextPath = pathSplit.slice(1).join('/');
     const meshes = node.getChildMeshes(true, (n) => n.name === path[0]);
     if (meshes.length > 0) {
-      // return meshes.reduce((prev, mesh) => {
-      //   const findMeshes = findChildMeshes(mesh, nextPath);
-      //   if (findMeshes) {
-      //     prev = prev.concat(findMeshes);
-      //   }
-      //   return prev;
-      // }, [] as BABYLON.AbstractMesh[]);
       meshes.forEach((mesh) => {
         const findMeshes = findChildMeshes(mesh, nextPath);
         if (findMeshes && findMeshes.length > 0) {
@@ -65,5 +58,24 @@ export function findByPath(
       const findMeshes = rootMesh && findChildMeshes(rootMesh, nextPath);
       return findMeshes && findMeshes.length > 0 ? findMeshes[0] : null;
     }
+  }
+}
+
+//播放动画
+export function startAnimation(
+  scene: BABYLON.Scene,
+  name: string,
+  speed: number = 2,
+  inverse?: boolean,
+  from?: number,
+  to?: number,
+) {
+  const animation = scene.getAnimationGroupByName(name);
+  const aFrom = typeof from === 'number' ? from : animation?.from;
+  const aTo = typeof to === 'number' ? to : animation?.to;
+  if (inverse) {
+    animation?.start(false, speed, aTo, aFrom);
+  } else {
+    animation?.start(false, speed, aFrom, aTo);
   }
 }

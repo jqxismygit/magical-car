@@ -8,23 +8,23 @@ interface HotspotsProps {
   onClick?: (key: string) => void;
 }
 
+interface HotspotMap {
+  [key: string]: BABYLON.GUI.Button;
+}
+
 const Hotspots: React.FC<HotspotsProps> = (props) => {
   const { activeTags = [], data, onClick } = props;
   const { babylon } = useBabyloneContext();
   const { scene, uiCanvas } = babylon;
-  const initRef = React.useRef(false);
-  const activeHotsopt = React.useMemo(
-    () =>
-      data &&
-      data.filter((h) =>
-        typeof h.tag === 'string' ? activeTags.indexOf(h.tag) > -1 : true,
-      ),
-    [data, activeTags],
-  );
-  console.log('activeHotsopt = ', activeHotsopt);
+  const hotspotMapRef = React.useRef<HotspotMap>({});
 
   React.useEffect(() => {
-    if (!initRef.current && data && scene && uiCanvas) {
+    if (
+      Object.keys(hotspotMapRef.current).length === 0 &&
+      data &&
+      scene &&
+      uiCanvas
+    ) {
       data.forEach((hotspot) => {
         const target = findByPath(scene, hotspot.location as string);
         if (target) {
@@ -35,12 +35,27 @@ const Hotspots: React.FC<HotspotsProps> = (props) => {
           btn.onPointerUpObservable.add(function () {
             onClick?.(hotspot.key);
           });
+          btn.isVisible = false;
           uiCanvas?.addControl(btn);
           btn.linkWithMesh(target);
+          hotspotMapRef.current[hotspot.key] = btn;
         }
       });
     }
-  }, [scene, uiCanvas, activeHotsopt]);
+    if (scene && uiCanvas && data) {
+      data &&
+        data
+          .filter((h) =>
+            typeof h.tag === 'string' ? activeTags.indexOf(h.tag) > -1 : true,
+          )
+          .forEach((h) => {
+            const btn = hotspotMapRef.current[h.key];
+            if (btn) {
+              btn.isVisible = true;
+            }
+          });
+    }
+  }, [scene, uiCanvas, data, activeTags]);
 
   return null;
 };

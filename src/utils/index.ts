@@ -1,11 +1,11 @@
 type MaterialProperty = Partial<BABYLON.StandardMaterial>;
 
 export function updateMaterial(
-  id: string,
+  name: string,
   material: MaterialProperty,
   scene: BABYLON.Scene,
 ) {
-  const mat = scene.getMaterialByID(id);
+  const mat = scene.getMeshByName(name);
   if (mat) {
     Object.keys(material).forEach((k) => {
       //@ts-ignore

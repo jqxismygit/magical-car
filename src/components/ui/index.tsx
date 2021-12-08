@@ -6,6 +6,7 @@ import OverviewImg from '../../assets/overview.png';
 import Barrage from 'barrage-ui';
 import example from 'barrage-ui/example.json'; // 组件提供的示例数据
 import { Switch } from 'antd';
+import { CloseOutlined } from '@ant-design/icons';
 import styles from './index.less';
 
 const mainMenus = [
@@ -85,7 +86,7 @@ const UI: React.FC = () => {
   const [mainActive, setMainActive] = React.useState<string>();
   const [sceneActive, setSceneActive] = React.useState<string>();
   const [colorActive, setColorActive] = React.useState<string>();
-
+  const [showViewPage, setShowViewPage] = React.useState<boolean>(false);
   const handleMainBtnClick = (type: string) => {
     setMainActive(type);
   };
@@ -210,7 +211,12 @@ const UI: React.FC = () => {
         style={{ left: '30px' }}
         src={OverviewImg}
       />
-      <img className={styles.viewBtn} style={{ right: '30px' }} src={ViewImg} />
+      <img
+        className={styles.viewBtn}
+        style={{ right: '30px' }}
+        src={ViewImg}
+        onClick={() => setShowViewPage(true)}
+      />
       <span className={styles.barrage}>
         <Switch
           style={{ marginRight: 8 }}
@@ -227,6 +233,26 @@ const UI: React.FC = () => {
         />
         弹幕
       </span>
+
+      {showViewPage && (
+        <div className={styles.viewPage}>
+          <CloseOutlined
+            className={styles.close}
+            onClick={() => setShowViewPage(false)}
+          />
+          <div className={styles.img}></div>
+          <div style={{ marginTop: 15 }}>
+            <IconFont
+              type={'icon-danhaofenbutu'}
+              style={{ marginRight: 4, color: '#DD8080', fontSize: 24 }}
+            />
+            <span className={styles.title}>科技前灯</span>
+          </div>
+          <div className={styles.divide} />
+
+          <div className={styles.desc}>体现年前运动的先锋体验</div>
+        </div>
+      )}
     </div>
   );
 };

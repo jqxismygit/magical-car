@@ -1,8 +1,10 @@
 import React from 'react';
 
 export interface BabylonData {
+  canvas: any;
   engine: BABYLON.Engine;
   scene: BABYLON.Scene;
+  camera: BABYLON.ArcRotateCamera;
   uiCanvas: BABYLON.GUI.AdvancedDynamicTexture;
 }
 interface BabylonContextValue {

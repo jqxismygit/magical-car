@@ -1,7 +1,8 @@
 import React from 'react';
 import classnames from 'classnames';
 import IconFont from '../icon-font';
-import ViewImg from '../../assets/view.png';
+import InsideImg from '../../assets/inside.png';
+import OutsideImg from '../../assets/outside.png';
 import OverviewImg from '../../assets/overview.png';
 import Barrage from 'barrage-ui';
 import example from 'barrage-ui/example.json'; // 组件提供的示例数据
@@ -91,6 +92,24 @@ const colorMenus = [
   },
 ];
 
+const insideMenus = [
+  {
+    type: 'main',
+    name: '主驾驶位',
+    icon: 'icon-zhujiashiwei',
+  },
+  {
+    type: 'second',
+    name: '副驾驶位',
+    icon: 'icon-fujiashiwei',
+  },
+  {
+    type: 'behind',
+    name: '后排位置',
+    icon: 'icon-houpaiweizhi',
+  },
+];
+
 const UI: React.FC<any> = (props) => {
   const { showViewPage, setShowViewPage } = props;
   const barrageRef = React.useRef<any>(null);
@@ -100,10 +119,13 @@ const UI: React.FC<any> = (props) => {
   const [sceneActive, setSceneActive] = React.useState<string>('scene');
   const [colorActive, setColorActive] = React.useState<string>();
   // const [showViewPage, setShowViewPage] = React.useState<boolean>(false);
+  const [outside, setOutside] = React.useState<boolean>(true);
+
+  const [outsideActive, setOutsideActive] = React.useState<string>('main');
 
   const { babylon } = useBabyloneContext();
-  const { scene } = babylon;
-
+  const { scene, camera, canvas } = babylon;
+  const cameraRef = React.useRef<any>(null);
   const handleMainBtnClick = (type: string) => {
     setMainActive(type);
   };
@@ -175,75 +197,121 @@ const UI: React.FC<any> = (props) => {
           // display: showBrrage ? 'block' : 'none',
         }}
       ></div>
-      <div className={classnames(styles.mainWrap)}>
-        {mainMenus.map(({ type, name, icon }, idx) => (
-          <div
-            className={classnames(
-              styles.mainBtn,
-              mainActive === type && styles.active,
-            )}
-            key={type}
-            style={{ marginLeft: idx > 0 ? 30 : 0 }}
-            onClick={() => handleMainBtnClick(type)}
-          >
-            <IconFont type={icon} style={{ marginRight: 4 }} />
-            {name}
+      {outside && (
+        <>
+          <div className={classnames(styles.mainWrap)}>
+            {mainMenus.map(({ type, name, icon }, idx) => (
+              <div
+                className={classnames(
+                  styles.mainBtn,
+                  mainActive === type && styles.active,
+                )}
+                key={type}
+                style={{ marginLeft: idx > 0 ? 30 : 0 }}
+                onClick={() => handleMainBtnClick(type)}
+              >
+                <IconFont type={icon} style={{ marginRight: 4 }} />
+                {name}
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
-      {mainActive === 'scene' && (
-        <div
-          className={classnames(styles.mainWrap)}
-          style={{ bottom: '120px', height: 70 }}
-        >
-          {sceneMenus.map(({ type, icon, texture }, idx) => (
+          {mainActive === 'scene' && (
+            <div
+              className={classnames(styles.mainWrap)}
+              style={{ bottom: '120px', height: 70 }}
+            >
+              {sceneMenus.map(({ type, icon, texture }, idx) => (
+                <div
+                  className={classnames(
+                    styles.sceneBtn,
+                    sceneActive === type && styles.active,
+                  )}
+                  key={type}
+                  style={{ marginLeft: idx > 0 ? 27 : 0 }}
+                  onClick={() => handleSceneBtnClick(type, texture)}
+                >
+                  <IconFont type={icon} />
+                </div>
+              ))}
+            </div>
+          )}
+
+          {mainActive === 'color' && (
+            <div
+              className={classnames(styles.mainWrap)}
+              style={{ bottom: '120px', height: 70 }}
+            >
+              {colorMenus.map(({ type, startColor, endColor, color }, idx) => (
+                <div
+                  className={classnames(
+                    styles.colorBtn,
+                    colorActive === type && styles.active,
+                  )}
+                  key={type}
+                  style={{
+                    marginLeft: idx > 0 ? 43 : 0,
+                    background: `linear-gradient(145deg, ${startColor} 0%, ${endColor} 100%)`,
+                  }}
+                  onClick={() => handleColorBtnClick(type, color)}
+                ></div>
+              ))}
+            </div>
+          )}
+        </>
+      )}
+
+      {!outside && (
+        <div className={classnames(styles.mainWrap)}>
+          {insideMenus.map(({ type, name, icon }, idx) => (
             <div
               className={classnames(
-                styles.sceneBtn,
-                sceneActive === type && styles.active,
+                styles.insideBtn,
+                outsideActive === type && styles.active,
               )}
               key={type}
-              style={{ marginLeft: idx > 0 ? 27 : 0 }}
-              onClick={() => handleSceneBtnClick(type, texture)}
+              style={{ marginLeft: idx > 0 ? 23 : 0 }}
+              onClick={() => {
+                setOutsideActive(type);
+              }}
             >
-              <IconFont type={icon} />
+              <IconFont type={icon} style={{ marginRight: 4 }} />
+              <div className={styles.divid}></div>
+              {name}
             </div>
           ))}
         </div>
       )}
-
-      {mainActive === 'color' && (
-        <div
-          className={classnames(styles.mainWrap)}
-          style={{ bottom: '120px', height: 70 }}
-        >
-          {colorMenus.map(({ type, startColor, endColor, color }, idx) => (
-            <div
-              className={classnames(
-                styles.colorBtn,
-                colorActive === type && styles.active,
-              )}
-              key={type}
-              style={{
-                marginLeft: idx > 0 ? 43 : 0,
-                background: `linear-gradient(145deg, ${startColor} 0%, ${endColor} 100%)`,
-              }}
-              onClick={() => handleColorBtnClick(type, color)}
-            ></div>
-          ))}
-        </div>
+      {outside && (
+        <img
+          className={styles.viewBtn}
+          style={{ left: '30px' }}
+          src={OverviewImg}
+        />
       )}
-
-      <img
-        className={styles.viewBtn}
-        style={{ left: '30px' }}
-        src={OverviewImg}
-      />
       <img
         className={styles.viewBtn}
         style={{ right: '30px' }}
-        src={ViewImg}
-        // onClick={() => setShowViewPage(true)}
+        src={outside ? InsideImg : OutsideImg}
+        onClick={() => {
+          if (outside) {
+            cameraRef.current = new BABYLON.FreeCamera(
+              'insideCamera',
+              new BABYLON.Vector3(0, 1, 0),
+              scene,
+            );
+            cameraRef.current.setTarget(new BABYLON.Vector3(1, 1, 1));
+            camera.detachControl(canvas);
+            scene.activeCamera = cameraRef.current;
+            cameraRef.current.attachControl(canvas, true);
+          } else {
+            if (cameraRef.current) {
+              cameraRef.current.detachControl(canvas);
+              scene.activeCamera = camera;
+              camera.attachControl(canvas, true);
+            }
+          }
+          setOutside(!outside);
+        }}
       />
       <span className={styles.barrage}>
         <Switch

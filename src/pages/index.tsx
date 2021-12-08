@@ -101,17 +101,6 @@ export default function IndexPage() {
             __root__.scaling.z = 10;
 
             //调整材质
-            /*             const Mat_Window = scene.getMaterialByID('Window');
-            Mat_Window.alpha = 0.5;
-            Mat_Window.transparencyMode = 3;
-            Mat_Window.metallic = 1; */
-
-            /*             const Mat_GlassClear = scene.getMaterialByID('GlassClear');
-            Mat_GlassClear.alpha = 0.5;
-            Mat_GlassClear.transparencyMode = 3;
-            Mat_GlassClear.metallic = 1;
-            Mat_GlassClear.roughness = 0; */
-
             //车漆材质
             const CSR2_CarPaint = scene.getMaterialByID('CSR2_CarPaint');
             CSR2_CarPaint.albedoColor = new BABYLON.Color3(0, 0, 0);
@@ -128,6 +117,15 @@ export default function IndexPage() {
             CSR2_CarPaint.clearCoat.isEnabled = true;
             CSR2_CarPaint.clearCoat.intensity = 0.5;
           }),
+          //地面模型
+          BABYLON.SceneLoader.AppendAsync('models/', 'Ground.glb', scene).then(
+            (result) => {
+              const phong1 = scene.getMaterialByID('phong1');
+              phong1.roughness = 1;
+              phong1.indexOfRefraction = 1;
+            },
+          ),
+          //热点
           BABYLON.SceneLoader.AppendAsync(
             'models/',
             'Car_Hotspot.babylon',

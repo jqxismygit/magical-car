@@ -104,6 +104,13 @@ export default function IndexPage() {
 
             CSR2_CarPaint.clearCoat.isEnabled = true;
             CSR2_CarPaint.clearCoat.intensity = 0.5;
+
+            var overrides = new BABYLON.AnimationPropertiesOverride();
+
+            // 为全部动画设置混合
+            overrides.enableBlending = true;
+            overrides.blendingSpeed = 0.1;
+            scene.animationPropertiesOverride = overrides;
           }),
           //地面模型
           BABYLON.SceneLoader.AppendAsync('models/', 'Ground.glb', scene).then(

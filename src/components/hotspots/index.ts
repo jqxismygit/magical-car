@@ -5,7 +5,7 @@ import { findByPath } from '@/utils';
 interface HotspotsProps {
   activeTags?: string[];
   data?: Hotspot[];
-  onClick?: (key: string) => void;
+  onClick?: (hotspot: Hotspot) => void;
 }
 
 interface HotspotMap {
@@ -37,7 +37,7 @@ const Hotspots: React.FC<HotspotsProps> = (props) => {
           btn.height = '42px';
           // btn.background = 'green';
           btn.onPointerUpObservable.add(function () {
-            onClick?.(hotspot.key);
+            onClick?.(hotspot);
           });
           btn.isVisible = false;
           uiCanvas?.addControl(btn);

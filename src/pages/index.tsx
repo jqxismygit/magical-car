@@ -5,6 +5,7 @@ import React from 'react';
 
 import { BabylonContext, BabylonData } from '../components/babylon-context';
 import Hotspots from '../components/hotspots';
+import { Hotspot } from '../types';
 import SceneExplorer from '../components/scene-explorer';
 import { startAnimation } from '@/utils';
 import hotspots from './hotspot-config';
@@ -38,7 +39,7 @@ export default function IndexPage() {
         scene,
       );
       camera.attachControl(canvasRef.current, true);
-      camera.attachControl(canvasRef, true, false, false); //禁止相机移动
+      // camera.attachControl(canvasRef, true, false, false); //禁止相机移动
       camera.lowerRadiusLimit = 4;
       camera.upperRadiusLimit = 6;
       camera.upperBetaLimit = Math.PI / 2;
@@ -56,18 +57,6 @@ export default function IndexPage() {
         'Texture/A.env',
         scene,
       );
-      // const hdrTextureB = BABYLON.CubeTexture.CreateFromPrefilteredData(
-      //   'Texture/B.env',
-      //   scene,
-      // );
-      // const hdrTextureC = BABYLON.CubeTexture.CreateFromPrefilteredData(
-      //   'Texture/C.env',
-      //   scene,
-      // );
-      // const hdrTextureD = BABYLON.CubeTexture.CreateFromPrefilteredData(
-      //   'Texture/D.env',
-      //   scene,
-      // );
       scene.createDefaultSkybox(hdrTextureA);
       //关闭环境球显示
       // scene.getMeshByID('hdrSkyBox').setEnabled(false);
@@ -95,22 +84,11 @@ export default function IndexPage() {
           ).then((result) => {
             //调整模型大小
             const __root__ = scene.getMeshByID('__root__');
-            __root__.scaling.x = 10;
+            __root__.scaling.x = -10;
             __root__.scaling.y = 10;
             __root__.scaling.z = 10;
 
             //调整材质
-            /*             const Mat_Window = scene.getMaterialByID('Window');
-            Mat_Window.alpha = 0.5;
-            Mat_Window.transparencyMode = 3;
-            Mat_Window.metallic = 1; */
-
-            /*             const Mat_GlassClear = scene.getMaterialByID('GlassClear');
-            Mat_GlassClear.alpha = 0.5;
-            Mat_GlassClear.transparencyMode = 3;
-            Mat_GlassClear.metallic = 1;
-            Mat_GlassClear.roughness = 0; */
-
             //车漆材质
             const CSR2_CarPaint = scene.getMaterialByID('CSR2_CarPaint');
             CSR2_CarPaint.albedoColor = new BABYLON.Color3(0, 0, 0);
@@ -127,12 +105,24 @@ export default function IndexPage() {
             CSR2_CarPaint.clearCoat.isEnabled = true;
             CSR2_CarPaint.clearCoat.intensity = 0.5;
           }),
+          //地面模型
+          BABYLON.SceneLoader.AppendAsync('models/', 'Ground.glb', scene).then(
+            (result) => {
+              const phong1 = scene.getMaterialByID('phong1');
+              phong1.roughness = 1;
+              phong1.indexOfRefraction = 1;
+            },
+          ),
+          //热点
           BABYLON.SceneLoader.AppendAsync(
             'models/',
             'Car_Hotspot.babylon',
             scene,
           ),
         ]);
+
+        //这个代码很丑陋，应该改模型
+        scene.getAnimationGroupByName('Door_R')?.stop();
 
         // 监测浏览器/画布调整大小事件
         window.addEventListener('resize', function () {
@@ -146,12 +136,11 @@ export default function IndexPage() {
     }
   }, []);
 
-  const handleHotspotClick = (k: string) => {
-    console.log(k);
-    if (k === 'OpenCarDoor_L') {
-      babylon?.scene && startAnimation(babylon?.scene, 'AN_Door_L');
-    } else if (k === 'OpenCarDoor_R') {
-      babylon?.scene && startAnimation(babylon?.scene, 'AN_Door_R');
+  const handleHotspotClick = ({ key, tag, animation }: Hotspot) => {
+    if (tag === 'animation') {
+      if (babylon?.scene && animation) {
+        startAnimation(babylon?.scene, animation);
+      }
     }
   };
 
@@ -175,7 +164,7 @@ export default function IndexPage() {
             data={hotspots}
             onClick={handleHotspotClick}
           />
-          {/* <UI /> */}
+          <UI />
         </>
       )}
     </BabylonContext.Provider>

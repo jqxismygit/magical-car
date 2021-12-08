@@ -6,6 +6,7 @@ import OverviewImg from '../../assets/overview.png';
 import Barrage from 'barrage-ui';
 import example from 'barrage-ui/example.json'; // 组件提供的示例数据
 import { Switch } from 'antd';
+import { useBabyloneContext } from '../babylon-context';
 import { CloseOutlined } from '@ant-design/icons';
 import styles from './index.less';
 
@@ -26,18 +27,22 @@ const sceneMenus = [
   {
     type: 'scene',
     icon: 'icon-scene',
+    texture: 'Texture/A.env',
   },
   {
     type: 'fenbu',
     icon: 'icon-danhaofenbutu',
+    texture: 'Texture/B.env',
   },
   {
     type: 'road',
     icon: 'icon-road',
+    texture: 'Texture/C.env',
   },
   {
     type: 'city',
     icon: 'icon-city',
+    texture: 'Texture/D.env',
   },
 ];
 
@@ -46,36 +51,43 @@ const colorMenus = [
     type: 'color',
     startColor: '#FFDEE2',
     endColor: '#E37684',
+    color: new BABYLON.Color3(0, 0, 0),
   },
   {
     type: 'color2',
     startColor: '#C4E7F5',
     endColor: '#47A9D1',
+    color: new BABYLON.Color3(0, 0, 0),
   },
   {
     type: 'color3',
     startColor: '#F8F4BE',
     endColor: '#E1D100',
+    color: new BABYLON.Color3(255, 0, 0),
   },
   {
     type: 'color4',
     startColor: '#D5E8E4',
     endColor: '#5DE9CD',
+    color: new BABYLON.Color3(0, 255, 0),
   },
   {
     type: 'color5',
     startColor: '#E2D7E9',
     endColor: '#BD88E2',
+    color: new BABYLON.Color3(0, 0, 255),
   },
   {
     type: 'color6',
     startColor: '#EDEDED',
     endColor: '#CBCBCB',
+    color: new BABYLON.Color3(0, 0, 0),
   },
   {
     type: 'color7',
     startColor: '#FEE9DF',
     endColor: '#FBBA9D',
+    color: new BABYLON.Color3(0, 0, 0),
   },
 ];
 
@@ -84,19 +96,34 @@ const UI: React.FC = () => {
   const barrageInstance = React.useRef<any>(null);
   const [showBrrage, setShowBrrage] = React.useState<boolean>(false);
   const [mainActive, setMainActive] = React.useState<string>();
-  const [sceneActive, setSceneActive] = React.useState<string>();
+  const [sceneActive, setSceneActive] = React.useState<string>('scene');
   const [colorActive, setColorActive] = React.useState<string>();
   const [showViewPage, setShowViewPage] = React.useState<boolean>(false);
+
+  const { babylon } = useBabyloneContext();
+  const { scene } = babylon;
+
   const handleMainBtnClick = (type: string) => {
     setMainActive(type);
   };
 
-  const handleSceneBtnClick = (type: string) => {
+  const handleSceneBtnClick = (type: string, texture: string) => {
     setSceneActive(type);
+    const hdrTexture = BABYLON.CubeTexture.CreateFromPrefilteredData(
+      texture,
+      scene,
+    );
+    scene.createDefaultSkybox(hdrTexture);
+    // scene.
   };
 
-  const handleColorBtnClick = (type: string) => {
+  const handleColorBtnClick = (type: string, color: BABYLON.Color3) => {
     setColorActive(type);
+    const CSR2_CarPaint = scene.getMaterialByID('CSR2_CarPaint');
+    if (CSR2_CarPaint) {
+      //@ts-ignore
+      CSR2_CarPaint.albedoColor = color;
+    }
   };
 
   React.useEffect(() => {
@@ -168,7 +195,7 @@ const UI: React.FC = () => {
           className={classnames(styles.mainWrap)}
           style={{ bottom: '120px', height: 70 }}
         >
-          {sceneMenus.map(({ type, icon }, idx) => (
+          {sceneMenus.map(({ type, icon, texture }, idx) => (
             <div
               className={classnames(
                 styles.sceneBtn,
@@ -176,7 +203,7 @@ const UI: React.FC = () => {
               )}
               key={type}
               style={{ marginLeft: idx > 0 ? 27 : 0 }}
-              onClick={() => handleSceneBtnClick(type)}
+              onClick={() => handleSceneBtnClick(type, texture)}
             >
               <IconFont type={icon} />
             </div>
@@ -189,7 +216,7 @@ const UI: React.FC = () => {
           className={classnames(styles.mainWrap)}
           style={{ bottom: '120px', height: 70 }}
         >
-          {colorMenus.map(({ type, startColor, endColor }, idx) => (
+          {colorMenus.map(({ type, startColor, endColor, color }, idx) => (
             <div
               className={classnames(
                 styles.colorBtn,
@@ -200,7 +227,7 @@ const UI: React.FC = () => {
                 marginLeft: idx > 0 ? 43 : 0,
                 background: `linear-gradient(145deg, ${startColor} 0%, ${endColor} 100%)`,
               }}
-              onClick={() => handleColorBtnClick(type)}
+              onClick={() => handleColorBtnClick(type, color)}
             ></div>
           ))}
         </div>

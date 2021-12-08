@@ -1,4 +1,8 @@
 import React from 'react';
+// import Barrage from 'barrage-ui';
+// import example from 'barrage-ui/example.json'; // 组件提供的示例数据
+// import "@babylonjs/core/Debug/debugLayer"; // Augments the scene with the debug methods
+
 import { BabylonContext, BabylonData } from '../components/babylon-context';
 import Hotspots from '../components/hotspots';
 import SceneExplorer from '../components/scene-explorer';
@@ -14,12 +18,14 @@ export default function IndexPage() {
   React.useEffect(() => {
     // const canvas = document.getElementById('renderCanvas'); // Get the canvas element
     const engine = new BABYLON.Engine(canvasRef.current, true); // Generate the BABYLON 3D engine
-
     BABYLON.Animation.AllowMatricesInterpolation = true;
 
     // Add your code here matching the playground format
     const createScene = function () {
       const scene = new BABYLON.Scene(engine);
+
+      //场景debugLayer
+      // scene.debugLayer.show()
 
       // BABYLON.MeshBuilder.CreateBox('box', {});
 
@@ -46,13 +52,25 @@ export default function IndexPage() {
       );
 
       // 加载环境贴图
-      var hdrTexture = BABYLON.CubeTexture.CreateFromPrefilteredData(
-        'Texture/Studio_Softbox_2Umbrellas_cube_specular.env',
+      const hdrTextureA = BABYLON.CubeTexture.CreateFromPrefilteredData(
+        'Texture/A.env',
         scene,
       );
-      scene.createDefaultSkybox(hdrTexture);
+      const hdrTextureB = BABYLON.CubeTexture.CreateFromPrefilteredData(
+        'Texture/B.env',
+        scene,
+      );
+      const hdrTextureC = BABYLON.CubeTexture.CreateFromPrefilteredData(
+        'Texture/C.env',
+        scene,
+      );
+      const hdrTextureD = BABYLON.CubeTexture.CreateFromPrefilteredData(
+        'Texture/D.env',
+        scene,
+      );
+      scene.createDefaultSkybox(hdrTextureA);
       //关闭环境球显示
-      scene?.getMeshByID('hdrSkyBox')?.setEnabled(false);
+      // scene.getMeshByID('hdrSkyBox').setEnabled(false);
 
       return scene;
     };
@@ -75,17 +93,39 @@ export default function IndexPage() {
             'Porsche911.gltf',
             scene,
           ).then((result) => {
+            //调整模型大小
+            const __root__ = scene.getMeshByID('__root__');
+            __root__.scaling.x = 10;
+            __root__.scaling.y = 10;
+            __root__.scaling.z = 10;
+
             //调整材质
-            const Mat_Window = scene.getMaterialByID('Window');
+            /*             const Mat_Window = scene.getMaterialByID('Window');
             Mat_Window.alpha = 0.5;
             Mat_Window.transparencyMode = 3;
-            Mat_Window.metallic = 1;
+            Mat_Window.metallic = 1; */
 
-            const Mat_GlassClear = scene.getMaterialByID('GlassClear');
+            /*             const Mat_GlassClear = scene.getMaterialByID('GlassClear');
             Mat_GlassClear.alpha = 0.5;
             Mat_GlassClear.transparencyMode = 3;
             Mat_GlassClear.metallic = 1;
-            Mat_GlassClear.roughness = 0;
+            Mat_GlassClear.roughness = 0; */
+
+            //车漆材质
+            const CSR2_CarPaint = scene.getMaterialByID('CSR2_CarPaint');
+            CSR2_CarPaint.albedoColor = new BABYLON.Color3(0, 0, 0);
+            CSR2_CarPaint.metallic = 1;
+            CSR2_CarPaint.roughness = 0.3;
+            CSR2_CarPaint.bumpTexture = new BABYLON.Texture(
+              'models/CarPaint_Normal.png',
+              scene,
+            );
+            CSR2_CarPaint.bumpTexture.coordinatesIndex = 1;
+            CSR2_CarPaint.bumpTexture.vScale = 30;
+            CSR2_CarPaint.bumpTexture.uScale = 30;
+
+            CSR2_CarPaint.clearCoat.isEnabled = true;
+            CSR2_CarPaint.clearCoat.intensity = 0.5;
           }),
           BABYLON.SceneLoader.AppendAsync(
             'models/',

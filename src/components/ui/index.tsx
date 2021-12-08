@@ -306,10 +306,10 @@ const UI: React.FC<any> = (props) => {
           if (outside) {
             cameraRef.current = new BABYLON.FreeCamera(
               'insideCamera',
-              new BABYLON.Vector3(0, 1, 0),
+              insideMenus[0].cameraPos,
               scene,
             );
-            cameraRef.current.setTarget(new BABYLON.Vector3(1, 1, 1));
+            cameraRef.current.setTarget(insideMenus[0].targetPos);
             camera.detachControl(canvas);
             scene.activeCamera = cameraRef.current;
             cameraRef.current.attachControl(canvas, true);

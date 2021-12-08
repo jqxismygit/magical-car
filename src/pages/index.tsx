@@ -126,6 +126,12 @@ export default function IndexPage() {
             'Car_Hotspot.babylon',
             scene,
           ),
+          BABYLON.SceneLoader.AppendAsync('models/', 'Light.gltf', scene).then(
+            (result) => {
+              const Light_Glow = scene.getMeshByID('Light_Glow');
+              // Light_Glow.rotation.y=180
+            },
+          ),
         ]);
 
         //这个代码很丑陋，应该改模型

@@ -91,14 +91,15 @@ const colorMenus = [
   },
 ];
 
-const UI: React.FC = () => {
+const UI: React.FC<any> = (props) => {
+  const { showViewPage, setShowViewPage } = props;
   const barrageRef = React.useRef<any>(null);
   const barrageInstance = React.useRef<any>(null);
   const [showBrrage, setShowBrrage] = React.useState<boolean>(false);
   const [mainActive, setMainActive] = React.useState<string>();
   const [sceneActive, setSceneActive] = React.useState<string>('scene');
   const [colorActive, setColorActive] = React.useState<string>();
-  const [showViewPage, setShowViewPage] = React.useState<boolean>(false);
+  // const [showViewPage, setShowViewPage] = React.useState<boolean>(false);
 
   const { babylon } = useBabyloneContext();
   const { scene } = babylon;
@@ -242,7 +243,7 @@ const UI: React.FC = () => {
         className={styles.viewBtn}
         style={{ right: '30px' }}
         src={ViewImg}
-        onClick={() => setShowViewPage(true)}
+        // onClick={() => setShowViewPage(true)}
       />
       <span className={styles.barrage}>
         <Switch

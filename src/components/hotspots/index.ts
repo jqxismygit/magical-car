@@ -35,6 +35,7 @@ const Hotspots: React.FC<HotspotsProps> = (props) => {
           );
           btn.width = '42px';
           btn.height = '42px';
+          btn.thickness = 0;
           // btn.background = 'green';
           btn.onPointerUpObservable.add(function () {
             onClick?.(hotspot);

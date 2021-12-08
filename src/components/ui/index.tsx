@@ -309,6 +309,8 @@ const UI: React.FC<any> = (props) => {
               insideMenus[0].cameraPos,
               scene,
             );
+            cameraRef.current.minZ = 0.1;
+            cameraRef.current.maxZ = 1500;
             cameraRef.current.setTarget(insideMenus[0].targetPos);
             camera.detachControl(canvas);
             scene.activeCamera = cameraRef.current;

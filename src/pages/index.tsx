@@ -2,18 +2,18 @@ import React from 'react';
 // import Barrage from 'barrage-ui';
 // import example from 'barrage-ui/example.json'; // 组件提供的示例数据
 // import "@babylonjs/core/Debug/debugLayer"; // Augments the scene with the debug methods
-import '@babylonjs/inspector';
 
 import { BabylonContext, BabylonData } from '../components/babylon-context';
 import Hotspots from '../components/hotspots';
 import SceneExplorer from '../components/scene-explorer';
 import { startAnimation } from '@/utils';
 import hotspots from './hotspot-config';
+import UI from '../components/ui';
 import styles from './index.less';
 
 export default function IndexPage() {
   const canvasRef = React.useRef<any>(null);
-  const barrageRef = React.useRef<any>(null);
+
   const [babylon, setBabylon] = React.useState<BabylonData>();
   React.useEffect(() => {
     // const canvas = document.getElementById('renderCanvas'); // Get the canvas element
@@ -52,11 +52,23 @@ export default function IndexPage() {
       );
 
       // 加载环境贴图
-      var hdrTexture = BABYLON.CubeTexture.CreateFromPrefilteredData(
-        'Texture/Studio_Softbox_2Umbrellas_cube_specular.env',
+      const hdrTextureA = BABYLON.CubeTexture.CreateFromPrefilteredData(
+        'Texture/A.env',
         scene,
       );
-      scene.createDefaultSkybox(hdrTexture);
+      const hdrTextureB = BABYLON.CubeTexture.CreateFromPrefilteredData(
+        'Texture/B.env',
+        scene,
+      );
+      const hdrTextureC = BABYLON.CubeTexture.CreateFromPrefilteredData(
+        'Texture/C.env',
+        scene,
+      );
+      const hdrTextureD = BABYLON.CubeTexture.CreateFromPrefilteredData(
+        'Texture/D.env',
+        scene,
+      );
+      scene.createDefaultSkybox(hdrTextureA);
       //关闭环境球显示
       // scene.getMeshByID('hdrSkyBox').setEnabled(false);
 
@@ -99,13 +111,21 @@ export default function IndexPage() {
             Mat_GlassClear.metallic = 1;
             Mat_GlassClear.roughness = 0; */
 
+            //车漆材质
             const CSR2_CarPaint = scene.getMaterialByID('CSR2_CarPaint');
             CSR2_CarPaint.albedoColor = new BABYLON.Color3(0, 0, 0);
             CSR2_CarPaint.metallic = 1;
-            CSR2_CarPaint.roughness = 0;
+            CSR2_CarPaint.roughness = 0.3;
             CSR2_CarPaint.bumpTexture = new BABYLON.Texture(
               'models/CarPaint_Normal.png',
+              scene,
             );
+            CSR2_CarPaint.bumpTexture.coordinatesIndex = 1;
+            CSR2_CarPaint.bumpTexture.vScale = 30;
+            CSR2_CarPaint.bumpTexture.uScale = 30;
+
+            CSR2_CarPaint.clearCoat.isEnabled = true;
+            CSR2_CarPaint.clearCoat.intensity = 0.5;
           }),
           BABYLON.SceneLoader.AppendAsync(
             'models/',
@@ -163,23 +183,14 @@ export default function IndexPage() {
     <BabylonContext.Provider
       value={{ babylon: babylon as BabylonData, setBabylon }}
     >
+      <UI />
       <canvas
         id="renderCanvas"
         touch-action="none"
         ref={canvasRef}
         style={{ width: '100%', height: '100%' }}
       ></canvas>
-      {/* <div
-        ref={barrageRef}
-        style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          pointerEvents: 'none',
-        }}
-      ></div> */}
+
       {/* 所有的插件都条件渲染 */}
       {babylon && (
         <>

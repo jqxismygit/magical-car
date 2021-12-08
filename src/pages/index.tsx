@@ -68,6 +68,7 @@ export default function IndexPage() {
         'Texture/D.env',
         scene,
       );
+
       scene.createDefaultSkybox(hdrTextureA);
       //关闭环境球显示
       // scene.getMeshByID('hdrSkyBox').setEnabled(false);
@@ -95,7 +96,7 @@ export default function IndexPage() {
           ).then((result) => {
             //调整模型大小
             const __root__ = scene.getMeshByID('__root__');
-            __root__.scaling.x = 10;
+            __root__.scaling.x = -10;
             __root__.scaling.y = 10;
             __root__.scaling.z = 10;
 

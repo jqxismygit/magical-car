@@ -19,21 +19,27 @@ const hotspots: Hotspot[] = [
     image: 'assets/Hostpot.svg',
   },
   {
-    key: 'OpenCarDoor_L',
+    key: 'Door_L',
     tag: 'animation',
-    location: 'Animation_Hotspot/OpenCarDoor_L',
+    location: 'Animation_Hotspot/Door_L',
     image: 'assets/Hostpot.svg',
   },
   {
-    key: 'OpenCarDoor_R',
+    key: 'Door_R',
     tag: 'animation',
-    location: 'Animation_Hotspot/OpenCarDoor_R',
+    location: 'Animation_Hotspot/Door_R',
     image: 'assets/Hostpot.svg',
   },
   {
-    key: 'OpenLight',
+    key: 'Storage',
     tag: 'animation',
-    location: 'Animation_Hotspot/OpenLight',
+    location: 'Animation_Hotspot/Storage',
+    image: 'assets/Hostpot.svg',
+  },
+  {
+    key: 'Light',
+    tag: 'animation',
+    location: 'Animation_Hotspot/Light',
     image: 'assets/Hostpot.svg',
   },
 ];

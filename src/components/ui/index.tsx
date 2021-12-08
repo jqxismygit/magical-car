@@ -97,16 +97,22 @@ const insideMenus = [
     type: 'main',
     name: '主驾驶位',
     icon: 'icon-zhujiashiwei',
+    cameraPos: new BABYLON.Vector3(0, 1, 0),
+    targetPos: new BABYLON.Vector3(1, 1, 1),
   },
   {
     type: 'second',
     name: '副驾驶位',
     icon: 'icon-fujiashiwei',
+    cameraPos: new BABYLON.Vector3(0, 1, 0),
+    targetPos: new BABYLON.Vector3(1, 1, 1),
   },
   {
     type: 'behind',
     name: '后排位置',
     icon: 'icon-houpaiweizhi',
+    cameraPos: new BABYLON.Vector3(0, 1, 0),
+    targetPos: new BABYLON.Vector3(1, 1, 1),
   },
 ];
 
@@ -262,23 +268,27 @@ const UI: React.FC<any> = (props) => {
 
       {!outside && (
         <div className={classnames(styles.mainWrap)}>
-          {insideMenus.map(({ type, name, icon }, idx) => (
-            <div
-              className={classnames(
-                styles.insideBtn,
-                outsideActive === type && styles.active,
-              )}
-              key={type}
-              style={{ marginLeft: idx > 0 ? 23 : 0 }}
-              onClick={() => {
-                setOutsideActive(type);
-              }}
-            >
-              <IconFont type={icon} style={{ marginRight: 4 }} />
-              <div className={styles.divid}></div>
-              {name}
-            </div>
-          ))}
+          {insideMenus.map(
+            ({ type, name, icon, cameraPos, targetPos }, idx) => (
+              <div
+                className={classnames(
+                  styles.insideBtn,
+                  outsideActive === type && styles.active,
+                )}
+                key={type}
+                style={{ marginLeft: idx > 0 ? 23 : 0 }}
+                onClick={() => {
+                  setOutsideActive(type);
+                  cameraRef.current.position = cameraPos;
+                  cameraRef.current.setTarget(targetPos);
+                }}
+              >
+                <IconFont type={icon} style={{ marginRight: 4 }} />
+                <div className={styles.divid}></div>
+                {name}
+              </div>
+            ),
+          )}
         </div>
       )}
       {outside && (

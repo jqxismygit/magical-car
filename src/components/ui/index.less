@@ -79,6 +79,50 @@
   }
 }
 
+.insideBtn {
+  width: 141px;
+  height: 46px;
+  border: 1px solid #ffffff;
+  background: linear-gradient(180deg, #ffffff 0%, #d5e6ff 15%, #dcebff 100%);
+  box-shadow: 0px 6px 6px rgba(0, 20, 87, 0.07);
+  opacity: 1;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  font-family: Segoe UI;
+  color: #3c5477;
+  cursor: pointer;
+  pointer-events: auto;
+  .divid {
+    width: 1px;
+    height: 31px;
+    background-color: #6e6e6e;
+    opacity: 0.35;
+    margin-left: 11px;
+    margin-right: 7px;
+  }
+  &.active {
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.7882352941176471);
+    background: linear-gradient(180deg, #a4e1ff 0%, #5785c4 100%);
+    box-shadow: 0px 6px 6px rgba(0, 20, 87, 0.07);
+    .divid {
+      background-color: white;
+    }
+  }
+  &:hover {
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.7882352941176471);
+    background: linear-gradient(180deg, #a4e1ff 0%, #5785c4 100%);
+    box-shadow: 0px 6px 6px rgba(0, 20, 87, 0.07);
+    .divid {
+      background-color: white;
+    }
+  }
+}
+
 .viewBtn {
   position: absolute;
   cursor: pointer;

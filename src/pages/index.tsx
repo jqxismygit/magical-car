@@ -12,6 +12,8 @@ import hotspots from './hotspot-config';
 import UI from '../components/ui';
 import styles from './index.less';
 
+const animationMap: any = {};
+
 export default function IndexPage() {
   const canvasRef = React.useRef<any>(null);
   const [showViewPage, setShowViewPage] = React.useState<boolean>(false);
@@ -61,11 +63,11 @@ export default function IndexPage() {
       //关闭环境球显示
       // scene.getMeshByID('hdrSkyBox').setEnabled(false);
 
-      return scene;
+      return { scene, camera };
     };
 
     if (canvasRef.current) {
-      const scene = createScene(); //Call the createScene function
+      const { scene, camera } = createScene(); //Call the createScene function
       const uiCanvas =
         BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI('uiCanvas');
       const CoT = new BABYLON.TransformNode('root');
@@ -142,7 +144,13 @@ export default function IndexPage() {
           engine.resize();
         });
 
-        setBabylon({ scene, uiCanvas, engine });
+        setBabylon({
+          scene,
+          uiCanvas,
+          engine,
+          camera,
+          canvas: canvasRef.current,
+        });
       }
 
       initScene();
@@ -152,7 +160,8 @@ export default function IndexPage() {
   const handleHotspotClick = ({ key, tag, animation }: Hotspot) => {
     if (tag === 'animation') {
       if (babylon?.scene && animation) {
-        startAnimation(babylon?.scene, animation);
+        startAnimation(babylon?.scene, animation, 2, animationMap[key]);
+        animationMap[key] = !animationMap[key];
       }
     } else if (tag === 'desc') {
       setShowViewPage(true);

@@ -14,7 +14,7 @@ import styles from './index.less';
 
 export default function IndexPage() {
   const canvasRef = React.useRef<any>(null);
-
+  const [showViewPage, setShowViewPage] = React.useState<boolean>(false);
   const [babylon, setBabylon] = React.useState<BabylonData>();
   React.useEffect(() => {
     // const canvas = document.getElementById('renderCanvas'); // Get the canvas element
@@ -141,6 +141,8 @@ export default function IndexPage() {
       if (babylon?.scene && animation) {
         startAnimation(babylon?.scene, animation);
       }
+    } else if (tag === 'desc') {
+      setShowViewPage(true);
     }
   };
 
@@ -160,11 +162,11 @@ export default function IndexPage() {
         <>
           <SceneExplorer />
           <Hotspots
-            activeTags={['animation']}
+            activeTags={['animation', 'desc']}
             data={hotspots}
             onClick={handleHotspotClick}
           />
-          <UI />
+          <UI showViewPage={showViewPage} setShowViewPage={setShowViewPage} />
         </>
       )}
     </BabylonContext.Provider>

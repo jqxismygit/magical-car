@@ -16,6 +16,8 @@ export default function IndexPage() {
     // const canvas = document.getElementById('renderCanvas'); // Get the canvas element
     const engine = new BABYLON.Engine(canvasRef.current, true); // Generate the BABYLON 3D engine
 
+    BABYLON.Animation.AllowMatricesInterpolation = true;
+
     // Add your code here matching the playground format
     const createScene = function () {
       const scene = new BABYLON.Scene(engine);
@@ -27,15 +29,32 @@ export default function IndexPage() {
         -Math.PI / 2,
         Math.PI / 2.5,
         15,
-        new BABYLON.Vector3(0, 0, 0),
+        new BABYLON.Vector3(0, 0.5, 0),
         scene,
       );
       camera.attachControl(canvasRef.current, true);
+      camera.attachControl(canvasRef, true, false, false); //禁止相机移动
+      camera.lowerRadiusLimit = 4;
+      camera.upperRadiusLimit = 6;
+      camera.upperBetaLimit = Math.PI / 2;
+      camera.pinchDeltaPercentage = 0.01; //捏合百分比
+      camera.wheelDeltaPercentage = 0.01; //滚轮百分比
+
       const light = new BABYLON.HemisphericLight(
         'light',
         new BABYLON.Vector3(1, 1, 0),
         scene,
       );
+
+      // 加载环境贴图
+      var hdrTexture = BABYLON.CubeTexture.CreateFromPrefilteredData(
+        'Texture/Studio_Softbox_2Umbrellas_cube_specular.env',
+        scene,
+      );
+      scene.createDefaultSkybox(hdrTexture);
+      //关闭环境球显示
+      scene.getMeshByID('hdrSkyBox').setEnabled(false);
+
       return scene;
     };
 
@@ -52,7 +71,23 @@ export default function IndexPage() {
       async function initScene() {
         BABYLON.SceneLoader.ShowLoadingScreen = false;
         await Promise.all([
-          BABYLON.SceneLoader.AppendAsync('models/', 'Car.babylon', scene),
+          BABYLON.SceneLoader.AppendAsync(
+            'models/Porsche/',
+            'Porsche911.gltf',
+            scene,
+          ).then((result) => {
+            //调整材质
+            const Mat_Window = scene.getMaterialByID('Window');
+            Mat_Window.alpha = 0.5;
+            Mat_Window.transparencyMode = 3;
+            Mat_Window.metallic = 1;
+
+            const Mat_GlassClear = scene.getMaterialByID('GlassClear');
+            Mat_GlassClear.alpha = 0.5;
+            Mat_GlassClear.transparencyMode = 3;
+            Mat_GlassClear.metallic = 1;
+            Mat_GlassClear.roughness = 0;
+          }),
           BABYLON.SceneLoader.AppendAsync(
             'models/',
             'Car_Hotspot.babylon',

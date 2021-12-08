@@ -28,10 +28,14 @@ const Hotspots: React.FC<HotspotsProps> = (props) => {
       data.forEach((hotspot) => {
         const target = findByPath(scene, hotspot.location as string);
         if (target) {
-          const btn = BABYLON.GUI.Button.CreateSimpleButton(hotspot.key, '');
-          btn.width = '24px';
-          btn.height = '24px';
-          btn.background = 'green';
+          // const btn = BABYLON.GUI.Button.CreateSimpleButton(hotspot.key, '');
+          const btn = BABYLON.GUI.Button.CreateImageOnlyButton(
+            hotspot.key,
+            hotspot.image,
+          );
+          btn.width = '42px';
+          btn.height = '42px';
+          // btn.background = 'green';
           btn.onPointerUpObservable.add(function () {
             onClick?.(hotspot.key);
           });

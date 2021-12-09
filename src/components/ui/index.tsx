@@ -97,15 +97,15 @@ const insideMenus = [
     type: 'main',
     name: '主驾驶位',
     icon: 'icon-zhujiashiwei',
-    cameraPos: new BABYLON.Vector3(0, 1, 0),
-    targetPos: new BABYLON.Vector3(1, 1, 1),
+    cameraPos: new BABYLON.Vector3(0.35, 1, 0.001),
+    targetPos: new BABYLON.Vector3(0.35, 1, -1),
   },
   {
     type: 'second',
     name: '副驾驶位',
     icon: 'icon-fujiashiwei',
-    cameraPos: new BABYLON.Vector3(0, 1, 0),
-    targetPos: new BABYLON.Vector3(1, 1, 1),
+    cameraPos: new BABYLON.Vector3(-0.35, 1, 0.001),
+    targetPos: new BABYLON.Vector3(-0.35, 1, -1),
   },
   {
     type: 'behind',
@@ -309,8 +309,9 @@ const UI: React.FC<any> = (props) => {
               insideMenus[0].cameraPos,
               scene,
             );
-            cameraRef.current.minZ = 0.1;
+            cameraRef.current.minZ = 0.01;
             cameraRef.current.maxZ = 1500;
+            cameraRef.current.fov = 1.5;
             cameraRef.current.setTarget(insideMenus[0].targetPos);
             camera.detachControl(canvas);
             scene.activeCamera = cameraRef.current;

@@ -133,8 +133,9 @@ export default function IndexPage() {
           ),
           BABYLON.SceneLoader.AppendAsync('models/', 'Light.gltf', scene).then(
             (result) => {
-              const Light_Glow = scene.getMeshByID('Light_Glow');
-              // Light_Glow.rotation.y=180
+              const getMaterialByID = scene.getMaterialByID('M_Light_Glow');
+              getMaterialByID.zOffset = -10;
+              getMaterialByID.roughness = 1;
             },
           ),
         ]);

@@ -107,6 +107,9 @@ export default function IndexPage() {
             CSR2_CarPaint.clearCoat.isEnabled = true;
             CSR2_CarPaint.clearCoat.intensity = 0.5;
 
+            const M_Light_Glow = scene.getMaterialByID('M_Light_Glow');
+            M_Light_Glow.roughness = 1;
+
             var overrides = new BABYLON.AnimationPropertiesOverride();
 
             // 为全部动画设置混合
